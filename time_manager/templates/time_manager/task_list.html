@@ -1,0 +1,39 @@
+{% extends 'time_manager/base.html' %}
+
+{% block title %}Tasks{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Tasks</h1>
+<a href="{% url 'add_task' %}" class="btn btn-primary mb-3">Add New Task</a>
+
+{% if tasks %}
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Due Date</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for task in tasks %}
+                <tr>
+                    <td>{{ task.title }}</td>
+                    <td>{{ task.due_date }}</td>
+                    <td>{% if task.completed %}Completed{% else %}Pending{% endif %}</td>
+                    <td>
+                        <a href="{% url 'edit_task' task.id %}" class="btn btn-sm btn-warning">Edit</a>
+                        {% if not task.completed %}
+                            <a href="{% url 'complete_task' task.id %}" class="btn btn-sm btn-success">Complete</a>
+                        {% endif %}
+                        <a href="{% url 'delete_task' task.id %}" class="btn btn-sm btn-danger">Delete</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>No tasks found.</p>
+{% endif %}
+{% endblock %}

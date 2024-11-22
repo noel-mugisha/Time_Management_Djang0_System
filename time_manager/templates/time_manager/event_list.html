@@ -1,0 +1,36 @@
+{% extends 'time_manager/base.html' %}
+
+{% block title %}Events{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Events</h1>
+<a href="{% url 'add_event' %}" class="btn btn-primary mb-3">Add New Event</a>
+
+{% if events %}
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Start Time</th>
+                <th>End Time</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for event in events %}
+                <tr>
+                    <td>{{ event.title }}</td>
+                    <td>{{ event.start_time }}</td>
+                    <td>{{ event.end_time }}</td>
+                    <td>
+                        <a href="{% url 'edit_event' event.id %}" class="btn btn-sm btn-warning">Edit</a>
+                        <a href="{% url 'delete_event' event.id %}" class="btn btn-sm btn-danger">Delete</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>No events found.</p>
+{% endif %}
+{% endblock %}
