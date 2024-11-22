@@ -45,12 +45,13 @@ def add_event(request):
         form = EventForm(request.POST)
         if form.is_valid():
             event = form.save(commit=False)
+            event.user = request.user
             event.created_at = timezone.now() 
             event.save()
             return redirect('event_list')
     else:
         form = EventForm()
-    return render(request, 'events/add.html', {'form': form})
+    return render(request, 'time_manager/event_form.html', {'form': form})
 
 
 @login_required
