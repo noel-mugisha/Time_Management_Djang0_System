@@ -43,12 +43,16 @@
 <hr>
 
 <h2>Task Statistics</h2>
-<canvas id="taskChart" width="400" height="200"></canvas>
+<div class="chart-container" style="position: relative; height: 250px; width: 250px; margin: auto;">
+    <canvas id="taskChart"></canvas>
+</div>
 
 <hr>
 
 <h2>Events by Month</h2>
-<canvas id="eventChart" width="400" height="200"></canvas>
+<div class="chart-container" style="position: relative; height: 250px; width: 350px; margin: auto;">
+    <canvas id="eventChart"></canvas>
+</div>
 
 <!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -68,6 +72,9 @@
                 borderWidth: 1,
             }],
         },
+        options: {
+            maintainAspectRatio: false,
+        },
     });
 
     // Events by Month Chart
@@ -84,6 +91,7 @@
             }],
         },
         options: {
+            maintainAspectRatio: false,
             scales: {
                 x: {
                     beginAtZero: true,
