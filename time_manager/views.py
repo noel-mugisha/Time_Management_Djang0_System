@@ -5,14 +5,46 @@ from django.contrib.auth import logout, login
 from django.views.decorators.http import require_http_methods
 from .models import Task, Event
 from .forms import TaskForm, EventForm, UserRegistrationForm
+from django.db.models.functions import TruncMonth
+from django.db.models import Count
 
 @login_required
 def dashboard(request):
-    print(f"Current user: {request.user}")
     tasks = Task.objects.filter(user=request.user).order_by('due_date')
     events = Event.objects.filter(user=request.user).order_by('start_time')
-    return render(request, 'time_manager/dashboard.html', {'tasks': tasks, 'events': events})
 
+    # Task statistics
+    total_tasks = tasks.count()
+    completed_tasks = tasks.filter(completed=True).count()
+    pending_tasks = total_tasks - completed_tasks
+
+    # Events by month
+    events_by_month = (
+        events.annotate(month=TruncMonth('start_time'))
+        .values('month')
+        .annotate(count=Count('id'))
+        .order_by('month')
+    )
+
+    # Prepare data for chart
+    events_by_month_data = [
+        {'month': event['month'].strftime('%B') if event['month'] else 'Unknown', 'count': event['count']}
+        for event in events_by_month
+    ]
+
+    return render(
+        request,
+        'time_manager/dashboard.html',
+        {
+            'tasks': tasks,
+            'events': events,
+            'chart_data': {
+                'completed': completed_tasks,
+                'pending': pending_tasks,
+                'events_by_month': events_by_month_data,
+            },
+        },
+    )
 
 @login_required
 def task_list(request):

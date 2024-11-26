@@ -39,4 +39,60 @@
         {% endif %}
     </div>
 </div>
+
+<hr>
+
+<h2>Task Statistics</h2>
+<canvas id="taskChart" width="400" height="200"></canvas>
+
+<hr>
+
+<h2>Events by Month</h2>
+<canvas id="eventChart" width="400" height="200"></canvas>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const taskData = {{ chart_data | safe }};
+
+    // Task Completion Chart
+    const taskCtx = document.getElementById('taskChart').getContext('2d');
+    new Chart(taskCtx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Completed', 'Pending'],
+            datasets: [{
+                label: 'Tasks',
+                data: [taskData.completed, taskData.pending],
+                backgroundColor: ['#4CAF50', '#FF5722'],
+                borderWidth: 1,
+            }],
+        },
+    });
+
+    // Events by Month Chart
+    const eventCtx = document.getElementById('eventChart').getContext('2d');
+    new Chart(eventCtx, {
+        type: 'bar',
+        data: {
+            labels: taskData.events_by_month.map(e => e.month),
+            datasets: [{
+                label: 'Events by Month',
+                data: taskData.events_by_month.map(e => e.count),
+                backgroundColor: '#2196F3',
+                borderWidth: 1,
+            }],
+        },
+        options: {
+            scales: {
+                x: {
+                    beginAtZero: true,
+                },
+                y: {
+                    beginAtZero: true,
+                },
+            },
+        },
+    });
+</script>
 {% endblock %}
